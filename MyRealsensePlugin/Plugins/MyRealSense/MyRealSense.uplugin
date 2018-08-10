@@ -1,0 +1,20 @@
+{
+   "FileVersion" : 3,
+   "FriendlyName" : "MyRealSense",
+   "Version" : 1,
+   "VersionName": "0.1",
+   "Description" : "Attempt to access a Realsense D400 RGB Video Stream",
+   "Category" : "",
+   "CreatedBy" : "Adrian Vorlaufer",
+   "CreatedByURL" : "",
+   "EngineVersion": "4.20.0",
+   "CanContainContent" : "true",
+   "Modules" : 
+   [
+      {
+          "Name" : "MyRealSense",
+          "Type" : "Developer",
+          "LoadingPhase": "Default"
+      }
+   ]
+}
