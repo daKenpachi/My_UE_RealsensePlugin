@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "LibRealSense",
+	"Description": "Wrapper for librealsense2 library of Intel Realsense SDK 2.0",
+	"Category": "Other",
+	"CreatedBy": "Adrian Vorlaufer",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "LibRealSense",
+			"Type": "Developer",
+			"LoadingPhase": "Default"
+		}
+	]
+}
