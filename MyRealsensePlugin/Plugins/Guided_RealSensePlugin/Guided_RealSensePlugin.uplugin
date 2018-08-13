@@ -13,11 +13,11 @@
 	"CanContainContent": true,
 	"IsBetaVersion": true,
 	"Installed": false,
-	"Modules": [
-		{
-			"Name": "Guided_RealSensePlugin",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		}
-	]
+  "Modules": [
+    {
+      "Name": "Guided_RealSensePlugin",
+      "Type": "Runtime",
+      "LoadingPhase": "PreDefault"
+    }
+  ]
 }

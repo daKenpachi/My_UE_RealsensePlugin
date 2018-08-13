@@ -31,23 +31,31 @@ public class Guided_RealSensePlugin : ModuleRules
 		
 		PublicIncludePaths.AddRange(
 			new string[] {
-				"Public",
+                "Guided_RealSensePlugin/Public",
 			}
 			);
 				
 		
 		PrivateIncludePaths.AddRange(
 			new string[] {
-                "Private",
+                "Guided_RealSensePlugin/Private",
 				// ... add other private include paths required here ...
 			}
 			);
-			
-		
-		PublicDependencyModuleNames.AddRange(
-			new string[]
-			{
-				"Core",
+
+
+        PublicDependencyModuleNames.AddRange(
+            new string[]
+            {
+                "Core",
+                "CoreUObject",
+                "Engine",
+                //"Slate",
+                //"SlateCore",
+                //"UnrealEd",
+                //"PropertyEditor",
+                //"BlueprintGraph",
+                "Librealsense2",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -56,10 +64,8 @@ public class Guided_RealSensePlugin : ModuleRules
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"CoreUObject",
-				"Engine",
-				"Slate",
-				"SlateCore",
+				"EditorStyle",
+                "AssetRegistry",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

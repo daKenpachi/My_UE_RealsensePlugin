@@ -10,5 +10,11 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
+	],
+	"Plugins": [
+		{
+			"Name": "PointCloudRenderer",
+			"Enabled": true
+		}
 	]
 }

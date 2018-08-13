@@ -2,17 +2,37 @@
 
 #include "Guided_RealSensePlugin.h"
 
+
+THIRD_PARTY_INCLUDES_START
+#include <ThirdParty/librealsense2/include/librealsense2/rs.hpp>
+THIRD_PARTY_INCLUDES_END
+
 #define LOCTEXT_NAMESPACE "FGuided_RealSensePluginModule"
 
 void FGuided_RealSensePluginModule::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+	UE_LOG(Guided_RealSensePlugin, Log, TEXT("Starting Realsense Plugin!"));
+
+	CheckRealsenseCamera();
 }
 
 void FGuided_RealSensePluginModule::ShutdownModule()
 {
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
+	UE_LOG(Guided_RealSensePlugin, Log, TEXT("Shut down Realsense Plugin!"));
+}
+
+int FGuided_RealSensePluginModule::CheckRealsenseCamera()
+{
+	try {
+		rs2::pipeline pipe;
+		pipe.start();
+		pipe.stop();
+	}
+	catch (std::exception e) {
+		UE_LOG(Guided_RealSensePlugin, Error, TEXT("Initialization Error: %s"), *FString(e.what()));
+		return -1;
+	}
+	return 0;
 }
 
 #undef LOCTEXT_NAMESPACE
