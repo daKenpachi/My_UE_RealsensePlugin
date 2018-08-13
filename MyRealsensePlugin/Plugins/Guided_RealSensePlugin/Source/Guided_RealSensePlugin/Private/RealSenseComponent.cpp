@@ -12,7 +12,6 @@ URealSenseComponent::URealSenseComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
 }
 
 
@@ -28,7 +27,56 @@ void URealSenseComponent::BeginPlay()
 	else {
 		UE_LOG(Guided_RealSensePlugin, Warning, TEXT("IGuided_RealSensePlugin not available"));
 	}
-	
+
+
+	try {
+
+		pipeline = new rs2::pipeline();
+		pipeline->start();
+		cameraWorks = true;
+	}
+	catch (std::exception e) {
+		UE_LOG(Guided_RealSensePlugin, Error, TEXT("Realsense initialization error: %s"), e.what());
+	}
+
+	try {
+		rs2::frameset frames = pipeline->wait_for_frames();
+		rs2::video_frame colorFrame = frames.get_color_frame();
+		TextureVideo = UTexture2D::CreateTransient(colorFrame.get_width(), colorFrame.get_height());
+		TextureVideo->AddToRoot();
+		TextureVideo->UpdateResource();
+		textureVideoRegion = new FUpdateTextureRegion2D(0,0,0,0, colorFrame.get_width(), colorFrame.get_height());
+
+	}
+	catch (std::exception e) {
+		UE_LOG(Guided_RealSensePlugin, Error, TEXT("Realsense video stream error: %s"), e.what());
+		cameraWorks = false;
+	}
+}
+
+bool URealSenseComponent::receiveFrame()
+{
+	try {
+		rs2::frameset frames = pipeline->wait_for_frames();
+		rs2::video_frame colorFrame = frames.get_color_frame();
+		uint8* RawUndistortedLeftBGRA = (uint8*)colorFrame.get_data();
+		int UndistortedFrameIndex = colorFrame.get_frame_number();
+		int UndistortedTimeIndex = colorFrame.get_frame_timestamp_domain();
+
+		TextureVideo->updateTextureRegion(DBL_MAX_10_EXP, 1, textureVideoRegion, Cast<uint32>(colorFrame.get_width * sizeof(uint8) * 4), sizeof(uint8) * 4, RawUndistortedLeftBGRA, texCleanUpFP);
+	}
+	catch (const rs2::error & e) {
+
+		UE_LOG(Guided_RealSensePlugin, Error, TEXT("%s"), *FString(e.what()));
+		cameraWorks = false;
+	}
+	catch (const std::exception& e) {
+
+		UE_LOG(Guided_RealSensePlugin, Error, TEXT("%s"), *FString(e.what()));
+		cameraWorks = false;
+	}
+
+	return cameraWorks;
 }
 
 
@@ -37,6 +85,8 @@ void URealSenseComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	if (cameraWorks) {
+		receiveFrame();
+	}
 }
 
