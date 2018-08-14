@@ -6,6 +6,8 @@
 #include "Modules/ModuleManager.h"
 
 
+DECLARE_LOG_CATEGORY_EXTERN(Guided_RealSensePlugin, Log, All);
+
 /**
 * The public interface to the Point Cloud Renderer module.
 * @Author Valentin Kraft

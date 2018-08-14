@@ -9,6 +9,11 @@ THIRD_PARTY_INCLUDES_END
 
 #define LOCTEXT_NAMESPACE "FGuided_RealSensePluginModule"
 
+
+DEFINE_LOG_CATEGORY(Guided_RealSensePlugin);
+
+
+
 void FGuided_RealSensePluginModule::StartupModule()
 {
 	UE_LOG(Guided_RealSensePlugin, Log, TEXT("Starting Realsense Plugin!"));

@@ -5,9 +5,10 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Components/Image.h"
+#include <Engine/Texture2D.h>
+#include <rs.hpp>
 #include "RealSenseComponent.generated.h"
 
-#include <rs.hpp>
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))

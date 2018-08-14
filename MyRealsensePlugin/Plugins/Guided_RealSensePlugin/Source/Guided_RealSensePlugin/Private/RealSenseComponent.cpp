@@ -5,6 +5,7 @@
 #include "Guided_RealSensePlugin.h"
 
 
+
 // Sets default values for this component's properties
 URealSenseComponent::URealSenseComponent()
 {
@@ -59,11 +60,12 @@ bool URealSenseComponent::receiveFrame()
 	try {
 		rs2::frameset frames = pipeline->wait_for_frames();
 		rs2::video_frame colorFrame = frames.get_color_frame();
-		uint8* RawUndistortedLeftBGRA = (uint8*)colorFrame.get_data();
+		uint8* RawUndistortedLeftBGRA = (uint8*)(colorFrame.get_data());
 		int UndistortedFrameIndex = colorFrame.get_frame_number();
 		int UndistortedTimeIndex = colorFrame.get_frame_timestamp_domain();
 
-		TextureVideo->updateTextureRegion(DBL_MAX_10_EXP, 1, textureVideoRegion, Cast<uint32>(colorFrame.get_width * sizeof(uint8) * 4), sizeof(uint8) * 4, RawUndistortedLeftBGRA, texCleanUpFP);
+		TextureVideo->UpdateTextureRegions(DBL_MAX_10_EXP, 1, textureVideoRegion, static_cast<uint32>(colorFrame.get_width() * sizeof(uint8) * 4), 
+			sizeof(uint8) * 4, RawUndistortedLeftBGRA, texCleanUpFP);
 	}
 	catch (const rs2::error & e) {
 
