@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Components/Image.h"
+#include <Engine/Texture.h>
 #include <Engine/Texture2D.h>
+#include <Engine/Classes/Materials/MaterialInstanceDynamic.h>
+#include <Engine/Classes/Materials/MaterialInterface.h>
 #include <rs.hpp>
 #include "RealSenseComponent.generated.h"
 
@@ -24,7 +27,14 @@ public:
 	FString filePath;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Guided_RealSensePlugin")
-		UTexture2D* TextureVideo = nullptr;
+		UTexture* MediaTexture = nullptr;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Guided_RealSensePlugin")
+		UMaterialInterface* MaterialInstanceToUpdate = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Guided_RealSensePlugin")
+		UMaterialInstanceDynamic* MaterialToUpdateDynamic = nullptr;
+
 
 protected:
 	// Called when the game starts
@@ -32,6 +42,7 @@ protected:
 
 	bool receiveFrame();
 
+	UTexture2D* TextureFromVideo = nullptr;
 	FUpdateTextureRegion2D* textureVideoRegion = nullptr;
 
 	rs2::pipeline* pipeline = nullptr;

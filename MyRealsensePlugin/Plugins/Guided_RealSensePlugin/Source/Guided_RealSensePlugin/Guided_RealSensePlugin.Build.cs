@@ -50,11 +50,9 @@ public class Guided_RealSensePlugin : ModuleRules
                 "Core",
                 "CoreUObject",
                 "Engine",
-                //"Slate",
-                //"SlateCore",
-                //"UnrealEd",
-                //"PropertyEditor",
-                //"BlueprintGraph",
+                "InputCore",
+                "RHI",
+                "RenderCore",
                 "Librealsense2",
 				// ... add other public dependencies that you statically link with here ...
 			}
@@ -66,6 +64,8 @@ public class Guided_RealSensePlugin : ModuleRules
 			{
 				"EditorStyle",
                 "AssetRegistry",
+                "Slate",
+                "SlateCore",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

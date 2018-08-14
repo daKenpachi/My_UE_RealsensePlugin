@@ -43,11 +43,11 @@ void URealSenseComponent::BeginPlay()
 	try {
 		rs2::frameset frames = pipeline->wait_for_frames();
 		rs2::video_frame colorFrame = frames.get_color_frame();
-		TextureVideo = UTexture2D::CreateTransient(colorFrame.get_width(), colorFrame.get_height());
-		TextureVideo->AddToRoot();
-		TextureVideo->UpdateResource();
+		TextureFromVideo = UTexture2D::CreateTransient(colorFrame.get_width(), colorFrame.get_height());
+		TextureFromVideo->AddToRoot();
+		TextureFromVideo->UpdateResource();
 		textureVideoRegion = new FUpdateTextureRegion2D(0,0,0,0, colorFrame.get_width(), colorFrame.get_height());
-
+		MaterialToUpdateDynamic = UMaterialInstanceDynamic::Create(MaterialInstanceToUpdate, this);
 	}
 	catch (std::exception e) {
 		UE_LOG(Guided_RealSensePlugin, Error, TEXT("Realsense video stream error: %s"), e.what());
@@ -64,7 +64,7 @@ bool URealSenseComponent::receiveFrame()
 		int UndistortedFrameIndex = colorFrame.get_frame_number();
 		int UndistortedTimeIndex = colorFrame.get_frame_timestamp_domain();
 
-		TextureVideo->UpdateTextureRegions(DBL_MAX_10_EXP, 1, textureVideoRegion, static_cast<uint32>(colorFrame.get_width() * sizeof(uint8) * 4), 
+		TextureFromVideo->UpdateTextureRegions(DBL_MAX_10_EXP, 1, textureVideoRegion, static_cast<uint32>(colorFrame.get_width() * sizeof(uint8) * 4), 
 			sizeof(uint8) * 4, RawUndistortedLeftBGRA, texCleanUpFP);
 	}
 	catch (const rs2::error & e) {
@@ -89,6 +89,15 @@ void URealSenseComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 	if (cameraWorks) {
 		receiveFrame();
+	}
+
+	if (MediaTexture) {
+		MediaTexture = Cast<UTexture>(TextureFromVideo);
+	}
+
+	if (MaterialInstanceToUpdate) {
+		MaterialToUpdateDynamic->SetTextureParameterValue(TEXT("Video"), TextureFromVideo);
+
 	}
 }
 
