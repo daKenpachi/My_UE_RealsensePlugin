@@ -16,6 +16,33 @@ URealSenseComponent::URealSenseComponent()
 }
 
 
+
+
+void URealSenseComponent::CreateUpdateabelTexture()
+{
+	TextureFromVideo = UTexture2D::CreateTransient(width, height);
+	//TextureFromVideo->AddToRoot();
+	TextureFromVideo->UpdateResource();
+	textureVideoRegion = new FUpdateTextureRegion2D(0, 0, 0, 0, width/2, height/2);
+}
+
+UTexture2D * URealSenseComponent::ReceiveRGBFrame()
+{
+	if (cameraWorks) {
+		TextureFromVideo->UpdateResource();
+		if (!receiveFrame()) {
+			UE_LOG(RealSenseLog, Error, TEXT("Could not receive a Frame from camera!"));
+		}
+		else {
+			UE_LOG(RealSenseLog, Log, TEXT("Received Frame!"))
+		}
+	}
+	else {
+		UE_LOG(RealSenseLog, Log, TEXT("CameraWorks is false"));
+	}
+	return TextureFromVideo;
+}
+
 // Called when the game starts
 void URealSenseComponent::BeginPlay()
 {
@@ -26,7 +53,7 @@ void URealSenseComponent::BeginPlay()
 		UE_LOG(RealSenseLog, Log, TEXT("CheckRealsenseCamera returned: %d"), x);
 	}
 	else {
-		UE_LOG(RealSenseLog, Warning, TEXT("IGuided_RealSensePlugin not available"));
+		UE_LOG(RealSenseLog, Warning, TEXT("RealSenseModule not available"));
 	}
 
 
@@ -43,11 +70,10 @@ void URealSenseComponent::BeginPlay()
 	try {
 		rs2::frameset frames = pipeline->wait_for_frames();
 		rs2::video_frame colorFrame = frames.get_color_frame();
-		TextureFromVideo = UTexture2D::CreateTransient(colorFrame.get_width(), colorFrame.get_height());
-		TextureFromVideo->AddToRoot();
-		TextureFromVideo->UpdateResource();
-		textureVideoRegion = new FUpdateTextureRegion2D(0,0,0,0, colorFrame.get_width(), colorFrame.get_height());
-		MaterialToUpdateDynamic = UMaterialInstanceDynamic::Create(MaterialInstanceToUpdate, this);
+		width = colorFrame.get_width();
+		height = colorFrame.get_height();
+		
+
 	}
 	catch (std::exception e) {
 		UE_LOG(RealSenseLog, Error, TEXT("Realsense video stream error: %s"), e.what());
@@ -60,12 +86,16 @@ bool URealSenseComponent::receiveFrame()
 	try {
 		rs2::frameset frames = pipeline->wait_for_frames();
 		rs2::video_frame colorFrame = frames.get_color_frame();
-		uint8* RawUndistortedLeftBGRA = (uint8*)(colorFrame.get_data());
-		int UndistortedFrameIndex = colorFrame.get_frame_number();
-		int UndistortedTimeIndex = colorFrame.get_frame_timestamp_domain();
+		uint8* data = (uint8*)(colorFrame.get_data());
+		int width = colorFrame.get_width();
+		int channels = colorFrame.get_bytes_per_pixel();
+		int bits = colorFrame.get_bits_per_pixel();
+		auto format = colorFrame.get_profile().format();
 
-		TextureFromVideo->UpdateTextureRegions(DBL_MAX_10_EXP, 1, textureVideoRegion, static_cast<uint32>(colorFrame.get_width() * sizeof(uint8) * 4), 
-			sizeof(uint8) * 4, RawUndistortedLeftBGRA, texCleanUpFP);
+		//TextureFromVideo->UpdateTextureRegions(DBL_MAX_10_EXP, 1, textureVideoRegion, static_cast<uint32>(width * bits), 
+		//	bits, data, texCleanUpFP);
+
+		UpdateTextureRegions(TextureFromVideo, DBL_MAX_10_EXP, 1, textureVideoRegion, static_cast<uint32>(width * bits), bits, data, false);
 	}
 	catch (const rs2::error & e) {
 
@@ -85,9 +115,10 @@ bool URealSenseComponent::receiveFrame()
 // Called every frame
 void URealSenseComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
+	TextureFromVideo->UpdateResource();
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (cameraWorks) {
+	/*if (cameraWorks) {
 		receiveFrame();
 	}
 
@@ -98,6 +129,61 @@ void URealSenseComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	if (MaterialInstanceToUpdate) {
 		MaterialToUpdateDynamic->SetTextureParameterValue(TEXT("Video"), TextureFromVideo);
 
-	}
+	}*/
 }
 
+void URealSenseComponent::UpdateTextureRegions(UTexture2D* Texture, int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData)
+{
+	if (Texture && Texture->Resource)
+	{
+		struct FUpdateTextureRegionsData
+		{
+			FTexture2DResource* Texture2DResource;
+			int32 MipIndex;
+			uint32 NumRegions;
+			FUpdateTextureRegion2D* Regions;
+			uint32 SrcPitch;
+			uint32 SrcBpp;
+			uint8* SrcData;
+		};
+
+		FUpdateTextureRegionsData* RegionData = new FUpdateTextureRegionsData;
+
+		RegionData->Texture2DResource = (FTexture2DResource*)Texture->Resource;
+		RegionData->MipIndex = MipIndex;
+		RegionData->NumRegions = NumRegions;
+		RegionData->Regions = Regions;
+		RegionData->SrcPitch = SrcPitch;
+		RegionData->SrcBpp = SrcBpp;
+		RegionData->SrcData = SrcData;
+
+		ENQUEUE_UNIQUE_RENDER_COMMAND_TWOPARAMETER(
+			UpdateTextureRegionsData,
+			FUpdateTextureRegionsData*, RegionData, RegionData,
+			bool, bFreeData, bFreeData,
+			{
+				for (uint32 RegionIndex = 0; RegionIndex < RegionData->NumRegions; ++RegionIndex)
+				{
+					int32 CurrentFirstMip = RegionData->Texture2DResource->GetCurrentFirstMip();
+					if (RegionData->MipIndex >= CurrentFirstMip)
+					{
+						RHIUpdateTexture2D(
+							RegionData->Texture2DResource->GetTexture2DRHI(),
+							RegionData->MipIndex - CurrentFirstMip,
+							RegionData->Regions[RegionIndex],
+							RegionData->SrcPitch,
+							RegionData->SrcData
+							+ RegionData->Regions[RegionIndex].SrcY * RegionData->SrcPitch
+							+ RegionData->Regions[RegionIndex].SrcX * RegionData->SrcBpp
+						);
+					}
+				}
+		if (bFreeData)
+		{
+			FMemory::Free(RegionData->Regions);
+			FMemory::Free(RegionData->SrcData);
+		}
+		delete RegionData;
+			});
+	}
+}

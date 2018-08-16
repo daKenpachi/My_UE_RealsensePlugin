@@ -25,7 +25,7 @@ public:
 	*/
 	static inline IRealSenseModule& Get()
 	{
-		return FModuleManager::LoadModuleChecked< IRealSenseModule >("RealSenseModule");
+		return FModuleManager::LoadModuleChecked< IRealSenseModule >("RealSensePlugin");
 	}
 
 	/**
@@ -35,7 +35,7 @@ public:
 	*/
 	static inline bool IsAvailable()
 	{
-		return FModuleManager::Get().IsModuleLoaded("RealSenseModule");
+		return FModuleManager::Get().IsModuleLoaded("RealSensePlugin");
 	}
 
 	virtual int CheckRealsenseCamera() = 0;

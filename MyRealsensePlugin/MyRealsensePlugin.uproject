@@ -13,7 +13,11 @@
 	],
 	"Plugins": [
 		{
-			"Name": "PointCloudRenderer",
+			"Name": "RuntimeMeshLoader",
+			"Enabled": true
+		},
+		{
+			"Name": "SRWorks",
 			"Enabled": true
 		}
 	]
