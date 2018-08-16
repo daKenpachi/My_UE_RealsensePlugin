@@ -2,4 +2,4 @@ Binaries/
 Intermediate/
 Saved/
 
-*.vs/*
+.vs/
