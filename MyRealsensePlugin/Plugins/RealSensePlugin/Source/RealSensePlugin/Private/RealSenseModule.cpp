@@ -7,7 +7,7 @@ THIRD_PARTY_INCLUDES_START
 #include <ThirdParty/librealsense2/include/librealsense2/rs.hpp>
 THIRD_PARTY_INCLUDES_END
 
-#define LOCTEXT_NAMESPACE "FGuided_RealSensePluginModule"
+#define LOCTEXT_NAMESPACE "FRealSenseModule"
 
 
 DEFINE_LOG_CATEGORY(RealSenseLog);
