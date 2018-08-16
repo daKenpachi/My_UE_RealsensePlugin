@@ -15,7 +15,7 @@
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class GUIDED_REALSENSEPLUGIN_API URealSenseComponent : public UActorComponent
+class REALSENSEPLUGIN_API URealSenseComponent : public UActorComponent
 {
 	GENERATED_BODY()
 

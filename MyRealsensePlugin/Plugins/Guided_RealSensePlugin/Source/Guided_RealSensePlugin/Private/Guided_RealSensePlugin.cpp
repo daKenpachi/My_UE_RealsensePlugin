@@ -1,6 +1,6 @@
 // Copyright 1998-2018 Epic Games, Inc. All Rights Reserved.
 
-#include "Guided_RealSensePlugin.h"
+#include "RealSenseModule.h"
 
 
 THIRD_PARTY_INCLUDES_START
@@ -10,23 +10,23 @@ THIRD_PARTY_INCLUDES_END
 #define LOCTEXT_NAMESPACE "FGuided_RealSensePluginModule"
 
 
-DEFINE_LOG_CATEGORY(Guided_RealSensePlugin);
+DEFINE_LOG_CATEGORY(RealSenseLog);
 
 
 
-void FGuided_RealSensePluginModule::StartupModule()
+void FRealSenseModule::StartupModule()
 {
-	UE_LOG(Guided_RealSensePlugin, Log, TEXT("Starting Realsense Plugin!"));
+	UE_LOG(RealSenseLog, Log, TEXT("Starting Realsense Module!"));
 
 	CheckRealsenseCamera();
 }
 
-void FGuided_RealSensePluginModule::ShutdownModule()
+void FRealSenseModule::ShutdownModule()
 {
-	UE_LOG(Guided_RealSensePlugin, Log, TEXT("Shut down Realsense Plugin!"));
+	UE_LOG(RealSenseLog, Log, TEXT("Shut down Realsense Module!"));
 }
 
-int FGuided_RealSensePluginModule::CheckRealsenseCamera()
+int FRealSenseModule::CheckRealsenseCamera()
 {
 	try {
 		rs2::pipeline pipe;
@@ -34,7 +34,7 @@ int FGuided_RealSensePluginModule::CheckRealsenseCamera()
 		pipe.stop();
 	}
 	catch (std::exception e) {
-		UE_LOG(Guided_RealSensePlugin, Error, TEXT("Initialization Error: %s"), *FString(e.what()));
+		UE_LOG(RealSenseLog, Error, TEXT("Initialization Error: %s"), *FString(e.what()));
 		return -1;
 	}
 	return 0;
@@ -42,4 +42,4 @@ int FGuided_RealSensePluginModule::CheckRealsenseCamera()
 
 #undef LOCTEXT_NAMESPACE
 	
-IMPLEMENT_MODULE(FGuided_RealSensePluginModule, Guided_RealSensePlugin)
+IMPLEMENT_MODULE(FRealSenseModule, RealSenseLog)

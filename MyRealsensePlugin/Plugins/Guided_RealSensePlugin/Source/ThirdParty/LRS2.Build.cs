@@ -4,7 +4,13 @@ using System.IO;
 using System;
 using UnrealBuildTool;
 
-public class Librealsense2 : ModuleRules
+/**
+ * Class <b>L</b>ib<b>R</b>eal<b>S</b>ense<b>2</b>. Loader for Realsense 2.0 SDK sources.
+ * This class only provides the paths to headers and binaries. No realsense functionality is provided or wrapped.
+ * <br>
+ * Build with guidance from http://www.valentinkraft.de/including-the-point-cloud-library-into-unreal-tutorial/.
+ */
+public class LRS2 : ModuleRules
 {
 
     private string ModulePath
@@ -17,7 +23,7 @@ public class Librealsense2 : ModuleRules
         get { return Path.GetFullPath(Path.Combine(ModulePath, "../Binaries"));  }
     }
 
-    public Librealsense2(ReadOnlyTargetRules Target) : base(Target)
+    public LRS2(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 

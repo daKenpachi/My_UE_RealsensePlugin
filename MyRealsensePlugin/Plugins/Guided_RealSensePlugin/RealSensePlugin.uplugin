@@ -2,11 +2,11 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "1.0",
-	"FriendlyName": "Guided_RealSensePlugin",
-	"Description": "Creating a Plugin for realsense2 library with tutorial from the internet",
+	"FriendlyName": "RealSensePlugin",
+	"Description": "Creating a Plugin for realsense2 library",
 	"Category": "Other",
 	"CreatedBy": "Adrian Vorlaufer",
-	"CreatedByURL": "http://www.valentinkraft.de/including-the-point-cloud-library-into-unreal-tutorial/",
+	"CreatedByURL": "",
 	"DocsURL": "",
 	"MarketplaceURL": "",
 	"SupportURL": "",
@@ -15,7 +15,7 @@
 	"Installed": false,
   "Modules": [
     {
-      "Name": "Guided_RealSensePlugin",
+      "Name": "RealSensePlugin",
       "Type": "Runtime",
       "LoadingPhase": "PreDefault"
     }

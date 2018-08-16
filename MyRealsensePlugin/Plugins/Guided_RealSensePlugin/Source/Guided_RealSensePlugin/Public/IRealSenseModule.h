@@ -6,13 +6,13 @@
 #include "Modules/ModuleManager.h"
 
 
-DECLARE_LOG_CATEGORY_EXTERN(Guided_RealSensePlugin, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(RealSenseLog, Log, All);
 
 /**
 * The public interface to the Point Cloud Renderer module.
 * @Author Valentin Kraft
 */
-class IGuided_RealSensePlugin : public IModuleInterface
+class IRealSenseModule : public IModuleInterface
 {
 
 public:
@@ -23,9 +23,9 @@ public:
 	*
 	* @return Returns singleton instance, loading the module on demand if needed
 	*/
-	static inline IGuided_RealSensePlugin& Get()
+	static inline IRealSenseModule& Get()
 	{
-		return FModuleManager::LoadModuleChecked< IGuided_RealSensePlugin >("Guided_RealSensePlugin");
+		return FModuleManager::LoadModuleChecked< IRealSenseModule >("RealSenseModule");
 	}
 
 	/**
@@ -35,7 +35,7 @@ public:
 	*/
 	static inline bool IsAvailable()
 	{
-		return FModuleManager::Get().IsModuleLoaded("Guided_RealSensePlugin");
+		return FModuleManager::Get().IsModuleLoaded("RealSenseModule");
 	}
 
 	virtual int CheckRealsenseCamera() = 0;

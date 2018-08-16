@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
-#include "../Public/IGuided_RealsensePlugin.h"
+#include "../Public/IRealsenseModule.h"
 
 
-class FGuided_RealSensePluginModule : public IGuided_RealSensePlugin
+class FRealSenseModule : public IRealSenseModule
 {
 public:
 

@@ -4,7 +4,10 @@ using System.IO;
 using System;
 using UnrealBuildTool;
 
-public class Guided_RealSensePlugin : ModuleRules
+/**
+ * Builds the actual Unreal Plugin for Realsense 2.0 Library
+ * */
+public class RealSensePlugin : ModuleRules
 {
 
     private string ModulePath
@@ -22,7 +25,7 @@ public class Guided_RealSensePlugin : ModuleRules
         get { return Path.GetFullPath(Path.Combine(ModulePath, "../../Binaries/")); }
     }
 
-    public Guided_RealSensePlugin(ReadOnlyTargetRules Target) : base(Target)
+    public RealSensePlugin(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -31,14 +34,14 @@ public class Guided_RealSensePlugin : ModuleRules
 		
 		PublicIncludePaths.AddRange(
 			new string[] {
-                "Guided_RealSensePlugin/Public",
+                "RealSensePlugin/Public",
 			}
 			);
 				
 		
 		PrivateIncludePaths.AddRange(
 			new string[] {
-                "Guided_RealSensePlugin/Private",
+                "RealSensePlugin/Private",
 				// ... add other private include paths required here ...
 			}
 			);
@@ -53,7 +56,7 @@ public class Guided_RealSensePlugin : ModuleRules
                 "InputCore",
                 "RHI",
                 "RenderCore",
-                "Librealsense2",
+                "LRS2",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

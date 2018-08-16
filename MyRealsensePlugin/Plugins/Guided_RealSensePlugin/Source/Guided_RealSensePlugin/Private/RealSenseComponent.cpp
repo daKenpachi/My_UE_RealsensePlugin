@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "RealSenseComponent.h"
-#include "IGuided_RealSensePlugin.h"
-#include "Guided_RealSensePlugin.h"
+#include "IRealSenseModule.h"
+#include "RealSenseModule.h"
 
 
 
@@ -21,12 +21,12 @@ void URealSenseComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (IGuided_RealSensePlugin::IsAvailable()) {
-		int x = IGuided_RealSensePlugin::Get().CheckRealsenseCamera();
-		UE_LOG(Guided_RealSensePlugin, Log, TEXT("CheckRealsenseCamera returned: %d"), x);
+	if (IRealSenseModule::IsAvailable()) {
+		int x = IRealSenseModule::Get().CheckRealsenseCamera();
+		UE_LOG(RealSenseLog, Log, TEXT("CheckRealsenseCamera returned: %d"), x);
 	}
 	else {
-		UE_LOG(Guided_RealSensePlugin, Warning, TEXT("IGuided_RealSensePlugin not available"));
+		UE_LOG(RealSenseLog, Warning, TEXT("IGuided_RealSensePlugin not available"));
 	}
 
 
@@ -37,7 +37,7 @@ void URealSenseComponent::BeginPlay()
 		cameraWorks = true;
 	}
 	catch (std::exception e) {
-		UE_LOG(Guided_RealSensePlugin, Error, TEXT("Realsense initialization error: %s"), e.what());
+		UE_LOG(RealSenseLog, Error, TEXT("Realsense initialization error: %s"), e.what());
 	}
 
 	try {
@@ -50,7 +50,7 @@ void URealSenseComponent::BeginPlay()
 		MaterialToUpdateDynamic = UMaterialInstanceDynamic::Create(MaterialInstanceToUpdate, this);
 	}
 	catch (std::exception e) {
-		UE_LOG(Guided_RealSensePlugin, Error, TEXT("Realsense video stream error: %s"), e.what());
+		UE_LOG(RealSenseLog, Error, TEXT("Realsense video stream error: %s"), e.what());
 		cameraWorks = false;
 	}
 }
@@ -69,12 +69,12 @@ bool URealSenseComponent::receiveFrame()
 	}
 	catch (const rs2::error & e) {
 
-		UE_LOG(Guided_RealSensePlugin, Error, TEXT("%s"), *FString(e.what()));
+		UE_LOG(RealSenseLog, Error, TEXT("%s"), *FString(e.what()));
 		cameraWorks = false;
 	}
 	catch (const std::exception& e) {
 
-		UE_LOG(Guided_RealSensePlugin, Error, TEXT("%s"), *FString(e.what()));
+		UE_LOG(RealSenseLog, Error, TEXT("%s"), *FString(e.what()));
 		cameraWorks = false;
 	}
 
