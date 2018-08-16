@@ -18,11 +18,10 @@ ARealSenseComponent::ARealSenseComponent()
 void ARealSenseComponent::CreateUpdateableTexture(int width, int height)
 {
 	TextureFromVideo = UTexture2D::CreateTransient(width, height);
-	//TextureFromVideo->AddToRoot();
+	TextureFromVideo->AddToRoot();
 	TextureFromVideo->UpdateResource();
 	textureVideoRegion = new FUpdateTextureRegion2D(0, 0, 0, 0, width, height);
-	Width = width;
-	Height = height;
+
 }
 
 UTexture2D * ARealSenseComponent::ReceiveRGBFrame()
@@ -96,6 +95,7 @@ bool ARealSenseComponent::receiveFrame()
 		UE_LOG(RealSenseLog, Log, TEXT("Image Received. Resolution: %d/%d, Channels: %d, Format: %s"), width, height, channels, *FString(rs2_format_to_string(format)));
 		UE_LOG(RealSenseLog, Log, TEXT("First/Last pixel: (%d/%d/%d), (%d/%d/%d)"), data[0], data[1], data[2], data[end - 3], data[end - 2], data[end - 1]);
 
+		// tried differend updating methods
 		TextureFromVideo->UpdateTextureRegions(DBL_MAX_10_EXP, 1, textureVideoRegion, static_cast<uint32>(width * bits),
 			bits, data, texCleanUpFP);
 
@@ -122,18 +122,6 @@ void ARealSenseComponent::Tick(float DeltaTime)
 	//TextureFromVideo->UpdateResource();
 	Super::Tick(DeltaTime);
 
-	/*if (cameraWorks) {
-		receiveFrame();
-	}
-
-	if (MediaTexture) {
-		MediaTexture = Cast<UTexture>(TextureFromVideo);
-	}
-
-	if (MaterialInstanceToUpdate) {
-		MaterialToUpdateDynamic->SetTextureParameterValue(TEXT("Video"), TextureFromVideo);
-
-	}*/
 }
 
 void ARealSenseComponent::UpdateTextureRegions(UTexture2D* Texture, int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData)
