@@ -7,26 +7,25 @@
 
 
 // Sets default values for this component's properties
-URealSenseComponent::URealSenseComponent()
+ARealSenseComponent::ARealSenseComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
 
 }
 
 
 
 
-void URealSenseComponent::CreateUpdateabelTexture()
+void ARealSenseComponent::CreateUpdateableTexture(int width, int height)
 {
 	TextureFromVideo = UTexture2D::CreateTransient(width, height);
 	//TextureFromVideo->AddToRoot();
 	TextureFromVideo->UpdateResource();
-	textureVideoRegion = new FUpdateTextureRegion2D(0, 0, 0, 0, width/2, height/2);
+	textureVideoRegion = new FUpdateTextureRegion2D(0, 0, 0, 0, width, height);
+	Width = width;
+	Height = height;
 }
 
-UTexture2D * URealSenseComponent::ReceiveRGBFrame()
+UTexture2D * ARealSenseComponent::ReceiveRGBFrame()
 {
 	if (cameraWorks) {
 		TextureFromVideo->UpdateResource();
@@ -44,7 +43,7 @@ UTexture2D * URealSenseComponent::ReceiveRGBFrame()
 }
 
 // Called when the game starts
-void URealSenseComponent::BeginPlay()
+void ARealSenseComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -70,9 +69,9 @@ void URealSenseComponent::BeginPlay()
 	try {
 		rs2::frameset frames = pipeline->wait_for_frames();
 		rs2::video_frame colorFrame = frames.get_color_frame();
-		width = colorFrame.get_width();
-		height = colorFrame.get_height();
-		
+		int width = colorFrame.get_width();
+		int height = colorFrame.get_height();
+		CreateUpdateableTexture(width, height);
 
 	}
 	catch (std::exception e) {
@@ -81,21 +80,26 @@ void URealSenseComponent::BeginPlay()
 	}
 }
 
-bool URealSenseComponent::receiveFrame()
+bool ARealSenseComponent::receiveFrame()
 {
 	try {
 		rs2::frameset frames = pipeline->wait_for_frames();
 		rs2::video_frame colorFrame = frames.get_color_frame();
 		uint8* data = (uint8*)(colorFrame.get_data());
+		int height = colorFrame.get_height();
 		int width = colorFrame.get_width();
 		int channels = colorFrame.get_bytes_per_pixel();
 		int bits = colorFrame.get_bits_per_pixel();
-		auto format = colorFrame.get_profile().format();
+		rs2_format format = colorFrame.get_profile().format();
+		int end = width * height * channels;
 
-		//TextureFromVideo->UpdateTextureRegions(DBL_MAX_10_EXP, 1, textureVideoRegion, static_cast<uint32>(width * bits), 
-		//	bits, data, texCleanUpFP);
+		UE_LOG(RealSenseLog, Log, TEXT("Image Received. Resolution: %d/%d, Channels: %d, Format: %s"), width, height, channels, *FString(rs2_format_to_string(format)));
+		UE_LOG(RealSenseLog, Log, TEXT("First/Last pixel: (%d/%d/%d), (%d/%d/%d)"), data[0], data[1], data[2], data[end - 3], data[end - 2], data[end - 1]);
 
-		UpdateTextureRegions(TextureFromVideo, DBL_MAX_10_EXP, 1, textureVideoRegion, static_cast<uint32>(width * bits), bits, data, false);
+		TextureFromVideo->UpdateTextureRegions(DBL_MAX_10_EXP, 1, textureVideoRegion, static_cast<uint32>(width * bits),
+			bits, data, texCleanUpFP);
+
+		//UpdateTextureRegions(TextureFromVideo, DBL_MAX_10_EXP, 1, textureVideoRegion, static_cast<uint32>(width * bits), bits, data, false);
 	}
 	catch (const rs2::error & e) {
 
@@ -113,10 +117,10 @@ bool URealSenseComponent::receiveFrame()
 
 
 // Called every frame
-void URealSenseComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void ARealSenseComponent::Tick(float DeltaTime)
 {
-	TextureFromVideo->UpdateResource();
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	//TextureFromVideo->UpdateResource();
+	Super::Tick(DeltaTime);
 
 	/*if (cameraWorks) {
 		receiveFrame();
@@ -132,7 +136,7 @@ void URealSenseComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	}*/
 }
 
-void URealSenseComponent::UpdateTextureRegions(UTexture2D* Texture, int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData)
+void ARealSenseComponent::UpdateTextureRegions(UTexture2D* Texture, int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData)
 {
 	if (Texture && Texture->Resource)
 	{

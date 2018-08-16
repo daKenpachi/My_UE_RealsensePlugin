@@ -3,8 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
-#include "Components/Image.h"
+#include "GameFramework/Actor.h"
 #include <Engine/Texture.h>
 #include <Engine/Texture2D.h>
 #include <Engine/Classes/Materials/MaterialInstanceDynamic.h>
@@ -15,13 +14,13 @@
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class REALSENSEPLUGIN_API URealSenseComponent : public UActorComponent
+class REALSENSEPLUGIN_API ARealSenseComponent : public AActor
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	URealSenseComponent();
+	ARealSenseComponent();
 
 	//UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "RealSense")
 	//FString filePath;
@@ -35,8 +34,14 @@ public:
 	//UPROPERTY(BlueprintReadOnly, Category = "RealSense")
 	//	UMaterialInstanceDynamic* MaterialToUpdateDynamic = nullptr;
 
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "VideoSettings")
+		int  Width = 640;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "VideoSettings")
+		int Height = 480;
+
 	UFUNCTION(BlueprintCallable, Category = "RealSense")
-		void CreateUpdateabelTexture();
+		void CreateUpdateableTexture(int img_width, int img_height);
 
 	UFUNCTION(BlueprintCallable, Category = "RealSense")
 		UTexture2D* ReceiveRGBFrame();
@@ -59,11 +64,10 @@ protected:
 	void TextureRegionCleanUp(uint8* rawData, const FUpdateTextureRegion2D* region) {};
 	TFunction<void(uint8*, const FUpdateTextureRegion2D*)> texCleanUpFP = [this](uint8* rawData, const FUpdateTextureRegion2D* region) { TextureRegionCleanUp(rawData, region); };
 
-	int width, height;
 
 public:	
 	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void Tick(float DeltaTime) override;
 
 	bool cameraWorks = false;
 	
