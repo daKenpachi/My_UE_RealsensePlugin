@@ -17,7 +17,7 @@ ARealSenseComponent::ARealSenseComponent()
 
 void ARealSenseComponent::CreateUpdateableTexture(int width, int height)
 {
-	TextureFromVideo = UTexture2D::CreateTransient(width, height);
+	TextureFromVideo = UTexture2D::CreateTransient(width, height, EPixelFormat::PF_R8G8);
 	TextureFromVideo->AddToRoot();
 	TextureFromVideo->UpdateResource();
 	textureVideoRegion = new FUpdateTextureRegion2D(0, 0, 0, 0, width, height);
@@ -97,10 +97,10 @@ bool ARealSenseComponent::receiveFrame()
 		UE_LOG(RealSenseLog, Log, TEXT("First/Last pixel: (%d/%d/%d), (%d/%d/%d)"), data[0], data[1], data[2], data[end - 3], data[end - 2], data[end - 1]);
 
 		// tried differend updating methods
-		//TextureFromVideo->UpdateTextureRegions((int32)1, 1, textureVideoRegion, static_cast<uint32>(width * bits),
-			//bits, data, texCleanUpFP);
+		TextureFromVideo->UpdateTextureRegions(0, 1, textureVideoRegion, static_cast<uint32>(width * bytes),
+			bytes, data, texCleanUpFP);
 
-		UpdateTextureRegions(TextureFromVideo, 0, 1, textureVideoRegion, static_cast<uint32>(width * bytes), bytes, data, false);
+		//UpdateTextureRegions(TextureFromVideo, 0, 1, textureVideoRegion, static_cast<uint32>(width * bytes), bytes, data, false);
 	}
 	catch (const rs2::error & e) {
 
