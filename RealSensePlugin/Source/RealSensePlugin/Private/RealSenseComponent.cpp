@@ -89,6 +89,7 @@ bool ARealSenseComponent::receiveFrame()
 		int width = colorFrame.get_width();
 		int channels = colorFrame.get_bytes_per_pixel();
 		int bits = colorFrame.get_bits_per_pixel();
+		int bytes = colorFrame.get_bytes_per_pixel();
 		rs2_format format = colorFrame.get_profile().format();
 		int end = width * height * channels;
 
@@ -96,10 +97,10 @@ bool ARealSenseComponent::receiveFrame()
 		UE_LOG(RealSenseLog, Log, TEXT("First/Last pixel: (%d/%d/%d), (%d/%d/%d)"), data[0], data[1], data[2], data[end - 3], data[end - 2], data[end - 1]);
 
 		// tried differend updating methods
-		TextureFromVideo->UpdateTextureRegions(DBL_MAX_10_EXP, 1, textureVideoRegion, static_cast<uint32>(width * bits),
-			bits, data, texCleanUpFP);
+		//TextureFromVideo->UpdateTextureRegions((int32)1, 1, textureVideoRegion, static_cast<uint32>(width * bits),
+			//bits, data, texCleanUpFP);
 
-		//UpdateTextureRegions(TextureFromVideo, DBL_MAX_10_EXP, 1, textureVideoRegion, static_cast<uint32>(width * bits), bits, data, false);
+		UpdateTextureRegions(TextureFromVideo, 0, 1, textureVideoRegion, static_cast<uint32>(width * bytes), bytes, data, false);
 	}
 	catch (const rs2::error & e) {
 
