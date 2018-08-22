@@ -19,8 +19,6 @@ public:
 	// Sets default values for this component's properties
 	ARealSenseComponent();
 
-	UFUNCTION(BlueprintCallable, Category = "RealSense")
-		void CreateUpdateableTexture(int img_width, int img_height);
 
 	UFUNCTION(BlueprintCallable, Category = "RealSense")
 		UTexture2D* ReceiveRGBFrame();
@@ -28,13 +26,33 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	
+	/** Initialize textures and Update Regions*/
+	void CreateUpdateableTextures();
 
 	/** Reveice a frame from realsense device and update texture*/
 	bool receiveFrame();
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video|Color")
+		int Width_c = 1280;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video|Color")
+		int Height_c = 720;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video|Color")
+		int Fps_c = 30;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video|Depth")
+		int Width_d = 960;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video|Depth")
+		int Height_d = 640;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video|Depth")
+		int Fps_d = 30;
+
 	// texture to update
 	UTexture2D* TextureFromVideo = nullptr;
 	FUpdateTextureRegion2D* textureVideoRegion = nullptr;
+	UTexture2D* TextureFromDepth = nullptr;
+	FUpdateTextureRegion2D* textureDepthRegion = nullptr;
 
 	// Realsense device pipeline
 	rs2::pipeline* pipeline = nullptr;

@@ -6,6 +6,7 @@
 
 
 
+
 // Sets default values for this component's properties
 ARealSenseComponent::ARealSenseComponent()
 {
@@ -15,16 +16,21 @@ ARealSenseComponent::ARealSenseComponent()
 
 
 
-void ARealSenseComponent::CreateUpdateableTexture(int width, int height)
+void ARealSenseComponent::CreateUpdateableTextures()
 {
-	TextureFromVideo = UTexture2D::CreateTransient(width, height, EPixelFormat::PF_R8G8);
+	TextureFromVideo = UTexture2D::CreateTransient(Width_c, Height_c, EPixelFormat::PF_B8G8R8A8);
 	TextureFromVideo->AddToRoot();
 	TextureFromVideo->UpdateResource();
-	textureVideoRegion = new FUpdateTextureRegion2D(0, 0, 0, 0, width, height);
+	textureVideoRegion = new FUpdateTextureRegion2D(0, 0, 0, 0, Width_c, Height_c);
+
+	TextureFromDepth = UTexture2D::CreateTransient(Width_d, Height_d, EPixelFormat::PF_DepthStencil);
+	TextureFromDepth->AddToRoot();
+	TextureFromDepth->UpdateResource();
+	textureDepthRegion = new FUpdateTextureRegion2D(0, 0, 0, 0, Width_c, Height_c);
 
 }
 
-UTexture2D * ARealSenseComponent::ReceiveRGBFrame()
+UTexture2D*  ARealSenseComponent::ReceiveRGBFrame()
 {
 	if (cameraWorks) {
 		TextureFromVideo->UpdateResource();
@@ -56,10 +62,26 @@ void ARealSenseComponent::BeginPlay()
 
 
 	try {
-
+		// start pipeline with config
 		pipeline = new rs2::pipeline();
-		pipeline->start();
-		cameraWorks = true;
+		rs2::config config;
+		rs2_stream stream_type = rs2_stream::RS2_STREAM_COLOR;
+		rs2_format format = rs2_format::RS2_FORMAT_BGRA8;
+		config.enable_stream(stream_type, Width_c, Height_c, format, Fps_c);
+		//stream_type = rs2_stream::RS2_STREAM_DEPTH;
+		//format = rs2_format::RS2_FORMAT_Z16;
+		//config.enable_stream(stream_type, Width_d, Height_d, format, Fps_d);
+
+		// check config
+		//if (config.can_resolve(*(pipeline->operator std::shared_ptr<rs2_pipeline>))) {
+		if(true){
+
+			pipeline->start(config);
+			cameraWorks = true;
+		}
+		else {
+			UE_LOG(RealSenseLog, Error, TEXT("COnfigured Video Settings are wrong!"))
+		}
 	}
 	catch (std::exception e) {
 		UE_LOG(RealSenseLog, Error, TEXT("Realsense initialization error: %s"), e.what());
@@ -68,9 +90,7 @@ void ARealSenseComponent::BeginPlay()
 	try {
 		rs2::frameset frames = pipeline->wait_for_frames();
 		rs2::video_frame colorFrame = frames.get_color_frame();
-		int width = colorFrame.get_width();
-		int height = colorFrame.get_height();
-		CreateUpdateableTexture(width, height);
+		CreateUpdateableTextures();
 
 	}
 	catch (std::exception e) {
