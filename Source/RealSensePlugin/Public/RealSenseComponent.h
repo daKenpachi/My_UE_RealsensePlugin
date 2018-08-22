@@ -8,7 +8,7 @@
 #include <rs.hpp>
 #include "RealSenseComponent.generated.h"
 
-
+#define DEBUG_LOG
 
 UCLASS( ClassGroup=(Custom))
 class REALSENSEPLUGIN_API ARealSenseComponent : public AActor
@@ -23,6 +23,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RealSense")
 		UTexture2D* ReceiveRGBFrame();
 
+	UFUNCTION(BlueprintCallable, Category = "RealSense")
+		UTexture2D* ReceiveDepthFrame();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -31,7 +34,8 @@ protected:
 	void CreateUpdateableTextures();
 
 	/** Reveice a frame from realsense device and update texture*/
-	bool receiveFrame();
+	UFUNCTION(BluePrintCallable, Category = "Realsense")
+	bool receiveFrames();
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video|Color")
@@ -42,15 +46,19 @@ protected:
 		int Fps_c = 30;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video|Depth")
-		int Width_d = 960;
+		int Width_d = 1280;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video|Depth")
-		int Height_d = 640;
+		int Height_d = 720;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Video|Depth")
-		int Fps_d = 30;
+		int Fps_d = 15;
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Video|Depth")
+		bool Enable_d = true;
 
 	// texture to update
+	UPROPERTY(BlueprintReadOnly, Category = "Realsense")
 	UTexture2D* TextureFromVideo = nullptr;
 	FUpdateTextureRegion2D* textureVideoRegion = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "Realsense")
 	UTexture2D* TextureFromDepth = nullptr;
 	FUpdateTextureRegion2D* textureDepthRegion = nullptr;
 
