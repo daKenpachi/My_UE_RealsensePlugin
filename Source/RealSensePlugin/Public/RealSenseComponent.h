@@ -65,9 +65,6 @@ protected:
 	// Realsense device pipeline
 	rs2::pipeline* pipeline = nullptr;
 
-	/** Update texture region from https://wiki.unrealengine.com/Dynamic_Textures */
-	void UpdateTextureRegions(UTexture2D* Texture, int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData);
-
 	// from SRWORKS plugin
 	void TextureRegionCleanUp(uint8* rawData, const FUpdateTextureRegion2D* region) {};
 	TFunction<void(uint8*, const FUpdateTextureRegion2D*)> texCleanUpFP = [this](uint8* rawData, const FUpdateTextureRegion2D* region) { TextureRegionCleanUp(rawData, region); };
