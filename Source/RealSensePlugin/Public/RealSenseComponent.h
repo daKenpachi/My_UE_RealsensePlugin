@@ -64,6 +64,7 @@ protected:
 
 	// Realsense device pipeline
 	rs2::pipeline* pipeline = nullptr;
+	rs2::colorizer depthColorizer;
 
 	// from SRWORKS plugin
 	void TextureRegionCleanUp(uint8* rawData, const FUpdateTextureRegion2D* region) {};

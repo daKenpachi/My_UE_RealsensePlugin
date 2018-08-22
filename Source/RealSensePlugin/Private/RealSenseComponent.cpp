@@ -4,7 +4,7 @@
 #include "IRealSenseModule.h"
 #include "RealSenseModule.h"
 
-
+#include <memory.h>
 
 
 // Sets default values for this component's properties
@@ -93,8 +93,8 @@ void ARealSenseComponent::BeginPlay()
 		config.enable_stream(stream_type, Width_d, Height_d, format, Fps_d);
 
 		// check config
-		//if (config.can_resolve(*(pipeline->operator std::shared_ptr<rs2_pipeline>))) {
-		if(true){
+		if (config.can_resolve(*pipeline)) {
+		//if(true){
 
 			pipeline->start(config);
 			cameraWorks = true;
@@ -124,7 +124,7 @@ bool ARealSenseComponent::receiveFrames()
 	try {
 		rs2::frameset frames = pipeline->wait_for_frames();
 		rs2::video_frame colorFrame = frames.get_color_frame();
-		rs2::depth_frame depthFrame = frames.get_depth_frame();
+		rs2::video_frame depthFrame = depthColorizer.colorize(frames.get_depth_frame());
 
 		// get color
 		uint8* data = (uint8*)(colorFrame.get_data());
