@@ -18,7 +18,9 @@ void FRealSenseModule::StartupModule()
 {
 	UE_LOG(RealSenseLog, Log, TEXT("Starting Realsense Module!"));
 
-	CheckRealsenseCamera();
+	if (CheckRealsenseCamera() != 0) {
+		UE_LOG(RealSenseLog, Warning, TEXT("No Realsense Device was detected!"));
+	}
 }
 
 void FRealSenseModule::ShutdownModule()
@@ -40,9 +42,9 @@ int FRealSenseModule::CheckRealsenseCamera()
 			if (dev.supports(RS2_CAMERA_INFO_NAME)) {
 				name = dev.get_info(RS2_CAMERA_INFO_NAME);
 			}
-			UE_LOG(RealSenseLog, Display, TEXT("Found Camera device: %s"), *FString(name.c_str()));
+			UE_LOG(RealSenseLog, Log, TEXT("Found Camera device: %s"), *FString(name.c_str()));
 			if (name.find("RealSense") != std::string::npos) {
-				UE_LOG(RealSenseLog, Display, TEXT("%s is a Realsense Device!"), *FString(name.c_str()));
+				UE_LOG(RealSenseLog, Log, TEXT("%s is a Realsense Device!"), *FString(name.c_str()));
 				retVal = 0;
 			}
 		}
