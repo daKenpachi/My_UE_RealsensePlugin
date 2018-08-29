@@ -29,6 +29,8 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	virtual void EndPlay() override;
 	
 	/** Initialize textures and Update Regions*/
 	void CreateUpdateableTextures();

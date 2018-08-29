@@ -10,7 +10,6 @@
 // Sets default values for this component's properties
 ARealSenseComponent::ARealSenseComponent()
 {
-
 }
 
 
@@ -116,6 +115,13 @@ void ARealSenseComponent::BeginPlay()
 	catch (std::exception e) {
 		UE_LOG(RealSenseLog, Error, TEXT("Realsense video stream error: %s"), e.what());
 		cameraWorks = false;
+	}
+}
+
+void ARealSenseComponent::EndPlay()
+{
+	if (pipeline) {
+		pipeline->stop();
 	}
 }
 
