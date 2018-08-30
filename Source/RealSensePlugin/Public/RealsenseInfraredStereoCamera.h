@@ -26,10 +26,13 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void EndPlay();
-
+	UPROPERTY(BlueprintReadOnly, Category = "Realsense|Video")
 	int WidthLeft = 1280;
+	UPROPERTY(BlueprintReadOnly, Category = "Realsense|Video")
 	int HeightLeft = 800;
+	UPROPERTY(BlueprintReadOnly, Category = "Realsense|Video")
 	int WidthRight = 1280;
+	UPROPERTY(BlueprintReadOnly, Category = "Realsense|Video")
 	int HeightRight = 800;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Realsense")
