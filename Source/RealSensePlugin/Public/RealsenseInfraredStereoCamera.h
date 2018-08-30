@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include <Engine/Texture2D.h>
 #include "rs.hpp"
+#include "RealsenseEnums.h"
 #include "RealsenseInfraredStereoCamera.generated.h"
 
 
@@ -20,6 +21,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Realsense")
 		bool UpdateTextures();
+
+	UFUNCTION(BlueprintCallable, Category = "Realsense")
+		UTexture2D* getTextureLeft();
+
+	UFUNCTION(BlueprintCallable, Category = "Realsense")
+		UTexture2D* getTextureRight();
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -54,10 +62,4 @@ public:
 	
 private:
 
-};
-
-//UENUM()
-enum InfraredSensor {
-	LEFT = 1,
-	RIGHT = 2
 };

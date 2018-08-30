@@ -37,6 +37,16 @@ bool ARealsenseInfraredStereoCamera::UpdateTextures()
 	return true;
 }
 
+UTexture2D * ARealsenseInfraredStereoCamera::getTextureLeft()
+{
+	return TextureLeft;
+}
+
+UTexture2D * ARealsenseInfraredStereoCamera::getTextureRight()
+{
+	return TextureRight;
+}
+
 // Called when the game starts or when spawned
 void ARealsenseInfraredStereoCamera::BeginPlay()
 {
