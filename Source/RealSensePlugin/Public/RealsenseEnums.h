@@ -2,6 +2,6 @@
 
 UENUM()
 enum InfraredSensor {
-	LEFT = 1,
-	RIGHT = 2
+	LEFT = 2,
+	RIGHT = 1
 };
