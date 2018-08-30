@@ -117,13 +117,13 @@ void ARealSenseComponent::BeginPlay()
 		cameraWorks = false;
 	}
 }
-
-void ARealSenseComponent::EndPlay()
-{
-	if (pipeline) {
-		pipeline->stop();
-	}
-}
+//
+//void ARealSenseComponent::EndPlay()
+//{
+//	if (pipeline) {
+//		pipeline->stop();
+//	}
+//}
 
 bool ARealSenseComponent::receiveFrames()
 {

@@ -25,18 +25,24 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void EndPlay() override;
+	virtual void EndPlay();
 
 	int WidthLeft = 1280;
 	int HeightLeft = 800;
 	int WidthRight = 1280;
 	int HeightRight = 800;
 
-	UPROPERTY(ReadOnly, Category = "Texture")
-	UTexture2D* textureLeft = nullptr;
-	UPROPERTY(ReadOnly, Category = "Texture")
-	UTexture2D* textureRight = nullptr;
-	FUpdateTextureRegion2D*  textureUpdater = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "Realsense")
+	UTexture2D* TextureLeft = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "Realsense")
+	UTexture2D* TextureRight = nullptr;
+	FUpdateTextureRegion2D*  TextureUpdater = nullptr;
+
+	rs2::pipeline_profile selection;
+	rs2::pipeline* pipeline = nullptr;
+	
+	void TextureRegionCleanUp(uint8* rawData, const FUpdateTextureRegion2D* region) {};
+	TFunction<void(uint8*, const FUpdateTextureRegion2D*)> texCleanUpFP = [this](uint8* rawData, const FUpdateTextureRegion2D* region) { TextureRegionCleanUp(rawData, region); };
 
 public:	
 	// Called every frame
@@ -44,11 +50,6 @@ public:
 
 	
 private:
-	rs2::pipeline_profile selection;
-	rs2::pipeline* pipline = nullptr;
-
-	void TextureRegionCleanUp(uint8* rawData, const FUpdateTextureRegion2D* region) {};
-	TFunction<void(uint8*, const FUpdateTextureRegion2D*)> texCleanUpFP = [this](uint8* rawData, const FUpdateTextureRegion2D* region) { TextureRegionCleanUp(rawData, region); };
 
 };
 
