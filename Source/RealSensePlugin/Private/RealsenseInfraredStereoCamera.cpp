@@ -12,7 +12,7 @@ ARealsenseInfraredStereoCamera::ARealsenseInfraredStereoCamera()
 	pipeline = new rs2::pipeline();
 }
 
-bool ARealsenseInfraredStereoCamera::UpdateTextures()
+bool ARealsenseInfraredStereoCamera::ReceiveFrame()
 {
 	try {
 		rs2::frameset frames = pipeline->wait_for_frames();

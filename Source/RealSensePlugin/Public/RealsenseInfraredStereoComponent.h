@@ -20,7 +20,7 @@ public:
 	URealsenseInfraredStereoComponent();
 
 	UFUNCTION(BlueprintCallable, Category = "Realsense")
-		bool UpdateTextures();
+		bool ReceiveFrame();
 
 	UFUNCTION(BlueprintCallable, Category = "Realsense")
 		UTexture2D* getTextureLeft();
@@ -28,20 +28,32 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Realsense")
 		UTexture2D* getTextureRight();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Realsense|Video")
+	int WidthLeft = 1280;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Realsense|Video")
+	int HeightLeft = 800;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Realsense|Video")
+	int WidthRight = 1280;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Realsense|Video")
+	int HeightRight = 800;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Realsense|Intrinsics")
+		float VerticalFOV = 91.2;		// in degree
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Realsense|Intrinsics")
+		float HorizontalFOV = 65.5;		// in degree
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Realsense|Intrinsics")
+		float StereoBaseline = 5;		// in cm
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Realsense|Intrinsics")
+		int FocalLength = 0.193;		// in cm
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	virtual void EndPlay();
-	UPROPERTY(BlueprintReadOnly, Category = "Realsense|Video")
-	int WidthLeft = 1280;
-	UPROPERTY(BlueprintReadOnly, Category = "Realsense|Video")
-	int HeightLeft = 800;
-	UPROPERTY(BlueprintReadOnly, Category = "Realsense|Video")
-	int WidthRight = 1280;
-	UPROPERTY(BlueprintReadOnly, Category = "Realsense|Video")
-	int HeightRight = 800;
+
+
+
 
 	UPROPERTY(BlueprintReadOnly, Category = "Realsense")
 	UTexture2D* TextureLeft = nullptr;

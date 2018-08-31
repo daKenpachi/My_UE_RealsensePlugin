@@ -20,7 +20,7 @@ public:
 	ARealsenseInfraredStereoCamera();
 
 	UFUNCTION(BlueprintCallable, Category = "Realsense")
-		bool UpdateTextures();
+		bool ReceiveFrame();
 
 	UFUNCTION(BlueprintCallable, Category = "Realsense")
 		UTexture2D* getTextureLeft();
