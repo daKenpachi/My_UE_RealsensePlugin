@@ -37,6 +37,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Realsense|Video")
 	int HeightRight = 800;
 
+	// from https://www.mouser.com/pdfdocs/Intel_D400_Series_Datasheet.pdf fpr D435
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Realsense|Intrinsics")
 		float VerticalFOV = 91.2;		// in degree
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Realsense|Intrinsics")
@@ -59,7 +60,7 @@ protected:
 	UTexture2D* TextureLeft = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "Realsense")
 	UTexture2D* TextureRight = nullptr;
-	FUpdateTextureRegion2D*  TextureUpdater = nullptr;
+	FUpdateTextureRegion2D*  TextureUpdateRegion = nullptr;
 
 	rs2::pipeline_profile selection;
 	rs2::pipeline* pipeline = nullptr;

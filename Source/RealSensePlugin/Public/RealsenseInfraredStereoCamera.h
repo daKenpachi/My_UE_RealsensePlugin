@@ -47,7 +47,7 @@ protected:
 	UTexture2D* TextureLeft = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "Realsense")
 	UTexture2D* TextureRight = nullptr;
-	FUpdateTextureRegion2D*  TextureUpdater = nullptr;
+	FUpdateTextureRegion2D*  TextureUpdateRegion = nullptr;
 
 	rs2::pipeline_profile selection;
 	rs2::pipeline* pipeline = nullptr;

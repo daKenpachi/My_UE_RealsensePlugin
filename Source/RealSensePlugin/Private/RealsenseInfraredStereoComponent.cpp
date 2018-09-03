@@ -24,9 +24,9 @@ bool URealsenseInfraredStereoComponent::ReceiveFrame()
 		UE_LOG(RealSenseLog, Log, TEXT("Received Left Image: w/h: %d/%d, channels: %d, pixels: %d, %d, %d ..."),
 			frameLeft.get_width(), frameLeft.get_height(), frameLeft.get_bytes_per_pixel(), dat[0], dat[1], dat[2]);
 
-		TextureLeft->UpdateTextureRegions(0, 1, TextureUpdater, static_cast<uint32>(WidthLeft * frameLeft.get_bytes_per_pixel()),
+		TextureLeft->UpdateTextureRegions(0, 1, TextureUpdateRegion, static_cast<uint32>(WidthLeft * frameLeft.get_bytes_per_pixel()),
 			frameLeft.get_bytes_per_pixel(), (uint8*) frameLeft.get_data(), texCleanUpFP);
-		TextureRight->UpdateTextureRegions(0, 1, TextureUpdater, static_cast<uint32>(WidthLeft * frameRight.get_bytes_per_pixel()),
+		TextureRight->UpdateTextureRegions(0, 1, TextureUpdateRegion, static_cast<uint32>(WidthLeft * frameRight.get_bytes_per_pixel()),
 			frameRight.get_bytes_per_pixel(), (uint8*) frameRight.get_data(), texCleanUpFP);
 
 	}
@@ -81,7 +81,7 @@ void URealsenseInfraredStereoComponent::BeginPlay()
 		TextureRight = UTexture2D::CreateTransient(WidthRight, HeightRight, EPixelFormat::PF_A8);
 		TextureRight->AddToRoot();
 		TextureRight->UpdateResource();
-		TextureUpdater = new FUpdateTextureRegion2D(0, 0, 0, 0, WidthLeft, HeightLeft);
+		TextureUpdateRegion = new FUpdateTextureRegion2D(0, 0, 0, 0, WidthLeft, HeightLeft);
 	}
 	catch (std::exception e) {
 		UE_LOG(RealSenseLog, Error, TEXT("Realsense device stream could not be started: %s"), *FString(e.what()));
