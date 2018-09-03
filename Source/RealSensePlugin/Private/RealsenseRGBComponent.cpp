@@ -30,8 +30,9 @@ bool URealsenseRGBComponent::ReceiveFrame()
 	}
 	catch (std::exception e) {
 		UE_LOG(RealSenseLog, Error, TEXT("Could not receive frame. %s"), *FString(e.what()));
+		return false;
 	}
-	return false;
+	return true;
 }
 
 UTexture2D * URealsenseRGBComponent::getTextureRGB()
